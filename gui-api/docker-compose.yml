@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  webfrontend:
+    image: data-explorer-frontend
+    build:
+      context: .
+      dockerfile: DataExplorer/Dockerfile
+
+  # webapi:
+  #   image: ${DOCKER_REGISTRY-}mywebapi
+  #   build:
+  #     context: .
+  #     dockerfile: MyWebAPI/Dockerfile
