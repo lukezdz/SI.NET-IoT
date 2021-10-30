@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  dataexplorerfrontend:
+    image: ${DOCKER_REGISTRY-}dataexplorerfrontend
+    build:
+      context: .
+      dockerfile: ../DataExplorerFrontend/Dockerfile
+     
+  dataexplorerapi:
+    image: ${DOCKER_REGISTRY-}dataexplorerapi
+    build:
+      context: .
+      dockerfile: ../DataExplorerApi/Dockerfile
+
