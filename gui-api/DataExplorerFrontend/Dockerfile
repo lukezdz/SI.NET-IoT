@@ -9,8 +9,10 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
 COPY ["DataExplorerFrontend.csproj", "DataExplorerFrontend/"]
 RUN dotnet restore "DataExplorerFrontend/DataExplorerFrontend.csproj"
+
+WORKDIR "/src/DataExplorerFrontend"
 COPY . .
-WORKDIR "/src/../DataExplorerFrontend"
+
 RUN dotnet build "DataExplorerFrontend.csproj" -c Release -o /app/build
 
 FROM build AS publish

@@ -25,7 +25,7 @@ namespace DataExplorerFrontend.Pages
             {
                 // Call *mywebapi*, and display its response in the page
                 var request = new System.Net.Http.HttpRequestMessage();
-                request.RequestUri = new Uri("http://mywebapi/WeatherForecast");
+                request.RequestUri = new Uri("http://dataexplorer_dataexplorerapi_1:80/WeatherForecast"); // zmiana na dobry adres
                 // request.RequestUri = new Uri("http://mywebapi/api/values/1"); // For ASP.NET 2.x, comment out previous line and uncomment this line.
                 var response = await client.SendAsync(request);
                 ViewData["Message"] += " and " + await response.Content.ReadAsStringAsync();

@@ -8,8 +8,8 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
 COPY ["DataExplorerApi.csproj", "DataExplorerApi/"]
 RUN dotnet restore "DataExplorerApi/DataExplorerApi.csproj"
+WORKDIR "/src/DataExplorerApi"
 COPY . .
-WORKDIR "/src/../DataExplorerApi"
 RUN dotnet build "DataExplorerApi.csproj" -c Release -o /app/build
 
 FROM build AS publish
