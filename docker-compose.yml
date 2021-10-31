@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  dataexplorerfrontend:
+    container_name: "data_explorer_frontend"
+    build: ./gui-api/DataExplorerFrontend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:443;http://+:80
+    ports:
+      - "80"
+      - "443"
+
+  dataexplorerapi:
+    container_name: "data_explorer_api"
+    build: ./gui-api/DataExplorerApi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
+  rabbitmq:
+    container_name: "rabbitmq"
+    image: rabbitmq:3.8-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=p4$$word
+    ports:
+      # AMQP protocol
+      - '5672:5672'
+      # HTTP management UI
+      - '15672:15672'
