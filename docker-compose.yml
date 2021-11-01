@@ -10,6 +10,8 @@ services:
     ports:
       - "80"
       - "443"
+    networks:
+      shared_net:
 
   dataexplorerapi:
     container_name: "data_explorer_api"
@@ -18,19 +20,36 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "80"
+    networks:
+      shared_net:
 
   rabbitmq:
     container_name: "rabbitmq"
     image: rabbitmq:3.8-management-alpine
-    domainname: rabbitmq.com
-#    environment:
-#      - RABBITMQ_DEFAULT_USER=admin
-#      - RABBITMQ_DEFAULT_PASS=p4$$word
+    hostname: rabbitmq.local
     ports:
       # AMQP protocol
       - '5672:5672'
       # HTTP management UI
       - '15672:15672'
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    networks:
+      shared_net:
+        aliases:
+          - rabbitmq.local
 
   publisher:
-    build: publisher
+    container_name: "data_publisher"
+    build: ./publisher
+    networks:
+      shared_net:
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+networks:
+  shared_net:
