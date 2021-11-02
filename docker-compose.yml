@@ -29,9 +29,9 @@ services:
     hostname: rabbitmq.local
     ports:
       # AMQP protocol
-      - '5672:5672'
+      - '5672'
       # HTTP management UI
-      - '15672:15672'
+      - '15672'
     healthcheck:
       test: rabbitmq-diagnostics -q ping
       interval: 30s
