@@ -1,67 +1,110 @@
 import random
 import time
-
 import pika
-import argparse
+import numpy
 
-# usage = '''====SENSORS=====
-# Connect to remote rabbitmq host
-# --user=guest --password=guest --host=192.168.1.200
-# Specify exchange, automatically sets routing-key to blank
-# --exchange=myexchange
-# '''
-# ap = argparse.ArgumentParser(description="RabbitMQ producer",
-#                              epilog=usage,
-#                              formatter_class=argparse.RawDescriptionHelpFormatter)
-# ap.add_argument('--user', default="guest", help="user e.g. 'guest'")
-# ap.add_argument('--password', default="guest", help="password e.g. 'pass'")
-# ap.add_argument('--host', default="localhost", help="rabbitMQ host, defaults to localhost")
-# ap.add_argument('--port', type=int, default=5672, help="rabbitMQ port, defaults to 5672")
-# ap.add_argument('--exchange', default="", help="name of exchange to use, empty means default")
-# ap.add_argument('--queue', default="sensors-queue", help="name of queue, defaults to 'sensors-queue'")
-# ap.add_argument('--routing-key', default="sensors-queue", help="routing key, defaults to 'sensors-queue'")
-# ap.add_argument('--body', default="test body", help="body of message, defaults to 'test body'")
-# args = ap.parse_args()
-# 
-# credentials = pika.PlainCredentials(args.user, args.password)
-# connection = pika.BlockingConnection(pika.ConnectionParameters(args.host, args.port, '/', credentials))
-# channel = connection.channel()
 
 def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.local', port=5672))
     channel = connection.channel()
 
+    # Greenhouse tomatoes environment (best conditions):
+    # air temperature -> 22-27 degrees Celsius
+    # substrate temperature -> 15-18 degrees Celsius
+    # air humidity -> 60-65 %
+    # substrate humidity  -> 70-85 %
+
+    # Min max conditions values
+    min_air_temp = 22
+    max_air_temp = 27
+
+    min_sub_temp = 15
+    max_sub_temp = 18
+
+    min_air_hum = 60
+    max_air_hum = 65
+
+    min_sub_hum = 70
+    max_sub_hum = 85
+
+    # Sensors dictionaries
+    air_temp_dict = dict([(f'air_temp-{x + 1}', random.randrange(min_air_temp, max_air_temp)) for x in range(30)])
+    sub_temp_dict = dict([(f'sub_temp-{x + 1}', random.randrange(min_sub_temp, max_sub_temp)) for x in range(30)])
+    air_hum_dict = dict([(f'air_hum-{x + 1}', random.randrange(min_air_hum, max_air_hum)) for x in range(30)])
+    sub_hum_dict = dict([(f'sub_hum-{x + 1}', random.randrange(min_sub_hum, max_sub_hum)) for x in range(30)])
+
+    config = {
+        'air_temp': air_temp_dict,
+        'sub_temp': sub_temp_dict,
+        'air_hum': air_hum_dict,
+        'sub_hum': sub_hum_dict
+    }
+    print(config)
+
     while True:
         try:
-            temp_dict = dict([(f'temp-{x + 1}', random.randrange(0, 60)) for x in range(30)])
-            hum_dict = dict([(f'hum-{x + 1}', random.randrange(0, 100)) for x in range(30)])
+            for x in air_temp_dict.keys():
+                air_temp_diff = numpy.random.choice([-1, 0, 1], p=[0.2, 0.6, 0.2])
+                air_temp_diff = air_temp_diff.item()
+                air_temp_dict[x] = max(min_air_temp, air_temp_dict[x] + air_temp_diff)
+                air_temp_dict[x] = min(max_air_temp, air_temp_dict[x] + air_temp_diff)
 
-            config = {
-                'temp': temp_dict,
-                'humidity': hum_dict
-            }
-            print(config)
-            print(config['temp']['temp-5'])
-            print(config['humidity']['hum-10'])
+            for x in sub_temp_dict.keys():
+                sub_temp_diff = numpy.random.choice([-1, 0, 1], p=[0.15, 0.7, 0.15])
+                sub_temp_diff = sub_temp_diff.item()
+                sub_temp_dict[x] = max(min_sub_temp, sub_temp_dict[x] + sub_temp_diff)
+                sub_temp_dict[x] = min(max_sub_temp, sub_temp_dict[x] + sub_temp_diff)
 
-            for x in temp_dict.keys():
+            for x in air_hum_dict.keys():
+                air_hum_diff = numpy.random.choice([-1, 0, 1], p=[0.2, 0.6, 0.2])
+                air_hum_diff = air_hum_diff.item()
+                air_hum_dict[x] = max(min_air_hum, air_hum_dict[x] + air_hum_diff)
+                air_hum_dict[x] = min(max_air_hum, air_hum_dict[x] + air_hum_diff)
+
+            for x in sub_hum_dict.keys():
+                sub_hum_diff = numpy.random.choice([-1, 0, 1], p=[0.3, 0.4, 0.3])
+                sub_hum_diff = sub_hum_diff.item()
+                sub_hum_dict[x] = max(min_sub_hum, sub_hum_dict[x] + sub_hum_diff)
+                sub_hum_dict[x] = min(max_sub_hum, sub_hum_dict[x] + sub_hum_diff)
+
+            for x in air_temp_dict.keys():
                 channel.basic_publish(exchange='',
-                                    routing_key='sensors-queue',
-                                    body=str.encode(x))  # sensor's id
+                                      routing_key='sensors-queue',
+                                      body=str.encode(x))  # sensor's id
                 channel.basic_publish(exchange='',
-                                    routing_key='sensors-queue',
-                                    body=temp_dict[x].to_bytes(1, 'little'))  # sensor's value
-                print("sensors-queue: temp message sent")
+                                      routing_key='sensors-queue',
+                                      body=air_temp_dict[x].to_bytes(1, 'little'))  # sensor's value
+                print("sensors-queue: air temp message sent: " + x + " - " + str(air_temp_dict[x]))
                 time.sleep(0.2)
 
-            for x in hum_dict.keys():
+            for x in sub_temp_dict.keys():
                 channel.basic_publish(exchange='',
-                                    routing_key='sensors-queue',
-                                    body=str.encode(x))  # sensor's id
+                                      routing_key='sensors-queue',
+                                      body=str.encode(x))  # sensor's id
                 channel.basic_publish(exchange='',
-                                    routing_key='sensors-queue',
-                                    body=hum_dict[x].to_bytes(1, 'little'))  # sensor's value
-                print("sensors-queue: humidity message sent")
+                                      routing_key='sensors-queue',
+                                      body=sub_temp_dict[x].to_bytes(1, 'little'))  # sensor's value
+                print("sensors-queue: sub temp message sent: " + x + " - " + str(sub_temp_dict[x]))
+                time.sleep(0.2)
+
+            for x in air_hum_dict.keys():
+                channel.basic_publish(exchange='',
+                                      routing_key='sensors-queue',
+                                      body=str.encode(x))  # sensor's id
+                channel.basic_publish(exchange='',
+                                      routing_key='sensors-queue',
+                                      body=air_hum_dict[x].to_bytes(1, 'little'))  # sensor's value
+                print("sensors-queue: air hum message sent: " + x + " - " + str(air_hum_dict[x]))
+                time.sleep(0.2)
+
+            for x in sub_hum_dict.keys():
+                channel.basic_publish(exchange='',
+                                      routing_key='sensors-queue',
+                                      body=str.encode(x))  # sensor's id
+                channel.basic_publish(exchange='',
+                                      routing_key='sensors-queue',
+                                      body=sub_hum_dict[x].to_bytes(1, 'little'))  # sensor's value
+                print("sensors-queue: sub hum message sent: " + x + " - " + str(sub_hum_dict[x]))
                 time.sleep(0.2)
 
         except KeyboardInterrupt:
