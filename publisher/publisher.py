@@ -2,7 +2,7 @@ import random
 import time
 import pika
 import numpy
-
+from datetime import datetime
 
 def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.local', port=5672))
@@ -70,40 +70,52 @@ def main():
             for x in air_temp_dict.keys():
                 channel.basic_publish(exchange='',
                                       routing_key='sensors-queue',
+                                      body=str(datetime.now()))  # time
+                channel.basic_publish(exchange='',
+                                      routing_key='sensors-queue',
                                       body=str.encode(x))  # sensor's id
                 channel.basic_publish(exchange='',
                                       routing_key='sensors-queue',
-                                      body=air_temp_dict[x].to_bytes(1, 'little'))  # sensor's value
+                                      body=str(air_temp_dict[x]))  # sensor's value
                 print("sensors-queue: air temp message sent: " + x + " - " + str(air_temp_dict[x]))
                 time.sleep(0.2)
 
             for x in sub_temp_dict.keys():
                 channel.basic_publish(exchange='',
                                       routing_key='sensors-queue',
+                                      body=str(datetime.now()))  # time
+                channel.basic_publish(exchange='',
+                                      routing_key='sensors-queue',
                                       body=str.encode(x))  # sensor's id
                 channel.basic_publish(exchange='',
                                       routing_key='sensors-queue',
-                                      body=sub_temp_dict[x].to_bytes(1, 'little'))  # sensor's value
+                                      body=str(sub_temp_dict[x]))  # sensor's value
                 print("sensors-queue: sub temp message sent: " + x + " - " + str(sub_temp_dict[x]))
                 time.sleep(0.2)
 
             for x in air_hum_dict.keys():
                 channel.basic_publish(exchange='',
                                       routing_key='sensors-queue',
+                                      body=str(datetime.now()))  # time
+                channel.basic_publish(exchange='',
+                                      routing_key='sensors-queue',
                                       body=str.encode(x))  # sensor's id
                 channel.basic_publish(exchange='',
                                       routing_key='sensors-queue',
-                                      body=air_hum_dict[x].to_bytes(1, 'little'))  # sensor's value
+                                      body=str(air_hum_dict[x]))  # sensor's value
                 print("sensors-queue: air hum message sent: " + x + " - " + str(air_hum_dict[x]))
                 time.sleep(0.2)
 
             for x in sub_hum_dict.keys():
                 channel.basic_publish(exchange='',
                                       routing_key='sensors-queue',
+                                      body=str(datetime.now()))  # time
+                channel.basic_publish(exchange='',
+                                      routing_key='sensors-queue',
                                       body=str.encode(x))  # sensor's id
                 channel.basic_publish(exchange='',
                                       routing_key='sensors-queue',
-                                      body=sub_hum_dict[x].to_bytes(1, 'little'))  # sensor's value
+                                      body=str(sub_hum_dict[x]))  # sensor's value
                 print("sensors-queue: sub hum message sent: " + x + " - " + str(sub_hum_dict[x]))
                 time.sleep(0.2)
 
