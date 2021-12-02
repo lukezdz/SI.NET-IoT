@@ -28,8 +28,8 @@ services:
     image: rabbitmq:3.8-management-alpine
     hostname: rabbitmq.local
     ports:
-      - 5672:5672
-      - 15672:15672
+      - 5672:5672       # just 4 dev 
+      - 15672:15672     # just 4 dev 
       # AMQP protocol
       # - '5672'
       # HTTP management UI
@@ -53,7 +53,7 @@ services:
       rabbitmq:
         condition: service_healthy
         
-  mongo:
+  mongo:                # just 4 development, on prod we need to connect to Mr. Sobecki mongodb 
     container_name: "mongo_db"
     image: mongo
     restart: always
@@ -63,12 +63,12 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
 
-  mongo-express:
+  mongo-express:        # as above
     container_name: "mongo_db_express"
     image: mongo-express
     restart: always
     ports:
-      - 8081:8081 # to change, just for development
+      - 8081:8081 
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example

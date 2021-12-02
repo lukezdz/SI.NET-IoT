@@ -16,6 +16,7 @@ namespace DataExplorerApi.Model
         [BsonElement("sensor_id")]
         public String sensorId { get; set; }
 
+        [BsonIgnore]
         [BsonElement("sensor_type")]
         public String sensorType { get; set; }
 

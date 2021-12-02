@@ -66,7 +66,6 @@ namespace DataExplorerApi.Services
             var pageList = QueryByPage(collection, sensorId, page, pageSize);
             foreach (var msg in pageList.Result.readOnlyList)
             {
-                _logger.LogWarning(msg.ToString());
                 message_list.Add(msg);
             }
 
@@ -79,9 +78,7 @@ namespace DataExplorerApi.Services
                 return true;
             return false;
         }
-
-
-        //todo usunac sensor_type w bazie
+       
         private static async Task<(int totalPages, IReadOnlyList<Message> readOnlyList)> QueryByPage(IMongoCollection<Message> collection, string sensorId, int page, int pageSize)
         {
             var countFacet = AggregateFacet.Create("count",
@@ -93,7 +90,7 @@ namespace DataExplorerApi.Services
             var dataFacet = AggregateFacet.Create("data",
                 PipelineDefinition<Message, Message>.Create(new[]
                 {
-                    PipelineStageDefinitionBuilder.Sort(Builders<Message>.Sort.Ascending(x => x.sensorType)),
+                    PipelineStageDefinitionBuilder.Sort(Builders<Message>.Sort.Ascending(x => x.dateTime)),
                     PipelineStageDefinitionBuilder.Skip<Message>((page - 1) * pageSize),
                     PipelineStageDefinitionBuilder.Limit<Message>(pageSize),
                 }));
@@ -120,8 +117,6 @@ namespace DataExplorerApi.Services
             return (totalPages, data);
         }
     }
-
-
 
     public static class SensorType
     {

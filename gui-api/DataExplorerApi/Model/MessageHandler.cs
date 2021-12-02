@@ -18,6 +18,8 @@ namespace DataExplorerApi.Model
         public MessageHandler(ILogger<MessageHandler> logger, IGreenhouseDBSettings settings)
         { 
             _logger = logger;
+
+        
             var client = new MongoClient(settings.ConnectionAddress);
             database = client.GetDatabase(settings.DatabaseName);
 
