@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using DataExplorerApi.Model;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -32,14 +33,20 @@ namespace DataExplorerApi
         {
             try
             {
-                _logger.LogDebug(@event.Body.ToArray().ToString());
-
                 var body = Encoding.UTF8.GetString(@event.Body.ToArray());
-                _logger.LogDebug(body.ToString());
+                var fullMessage = body.ToString();      
+                var fields = fullMessage.Split(";");
 
-                var message = JsonConvert.DeserializeObject<T>(body);
-
-                await _mediator.Send(message);
+                Message msg = new Message
+                {
+                    _id = MongoDB.Bson.ObjectId.GenerateNewId(),
+                    dateTime = fields[0],
+                    sensorId = fields[1].Split("-")[1],
+                    sensorType = fields[1].Split("-")[0],
+                    value = fields[2]
+                };
+        
+                await _mediator.Send(msg);
             }
             catch (Exception ex)
             {

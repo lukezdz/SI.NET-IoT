@@ -1,12 +1,16 @@
 using System;
 using System.Reflection;
+using DataExplorerApi.Model;
+using DataExplorerApi.Services;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using RabbitMQ.Client;
 
 
@@ -34,7 +38,7 @@ namespace DataExplorerApi
             services.AddControllers();
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
-            services.AddTransient<IRequestHandler<Model.LogCommand, Unit>, Model.LogCommandHandler>();
+            services.AddTransient<IRequestHandler<Model.Message, Unit>, Model.MessageHandler>();
             services.AddHostedService<QueueConsumer>();
             services.AddSingleton(serviceProvider =>
                 {
@@ -51,6 +55,10 @@ namespace DataExplorerApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DataExplorerApi", Version = "v1" });
             });
 
+            services.AddSingleton<GreenhouseService>();
+            services.Configure<GreenhouseDBSettings>(Configuration.GetSection(nameof(GreenhouseDBSettings)));
+            services.AddSingleton<IGreenhouseDBSettings>(sp =>
+                     sp.GetRequiredService<IOptions<GreenhouseDBSettings>>().Value);
 
         }
 

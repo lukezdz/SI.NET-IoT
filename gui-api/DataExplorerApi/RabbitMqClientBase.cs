@@ -36,23 +36,12 @@ namespace DataExplorerApi
             if (Channel == null || Channel.IsOpen == false)
             {
                 _logger.LogDebug("CREATING CHANNEL TO QUEUE");
-                Channel = _connection.CreateModel();
-                /*  Channel.ExchangeDeclare(
-                      exchange: LoggerExchange,
-                      type: "direct",
-                      durable: true,
-                      autoDelete: false);*/            
+                Channel = _connection.CreateModel();                      
                 Channel.QueueDeclare(
                     queue: LoggerQueue,
                     durable: true,
                     exclusive: false,
-                    autoDelete: false);
-
-                /*Channel.QueueBind(
-                    queue: LoggerQueue,
-                    exchange: LoggerExchange,
-                    routingKey: LoggerQueueAndExchangeRoutingKey);*/
-          
+                    autoDelete: false);          
             }
         }
 

@@ -27,7 +27,7 @@ namespace DataExplorerApi
             try
             {
                 var consumer = new AsyncEventingBasicConsumer(Channel);
-                consumer.Received += OnEventReceived<Model.LogCommand>;
+                consumer.Received += OnEventReceived<Model.Message>;
                 Channel.BasicConsume(queue: QueueName, autoAck: false, consumer: consumer);
             }
             catch (Exception ex)
