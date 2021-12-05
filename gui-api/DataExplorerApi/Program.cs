@@ -21,9 +21,10 @@ namespace DataExplorerApi
                  .ConfigureLogging(loggingBuilder =>
                  {
                      loggingBuilder.ClearProviders();
-                     loggingBuilder
-                         .AddDebug()
-                         .AddEventLog();
+                     loggingBuilder.AddConsole();
+                    // loggingBuilder
+                   //      .AddDebug()
+                    //     .AddEventLog();
                  })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

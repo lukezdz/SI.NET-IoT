@@ -6,8 +6,7 @@ from datetime import datetime
 
 
 def main():
-    # connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.local', port=5672))
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost', port=5672))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.local', port=5672))
     channel = connection.channel()
 
     # Greenhouse tomatoes environment (best conditions):
@@ -75,14 +74,15 @@ def main():
                                       body=str.encode(
                                           str(datetime.now()) + ";" + str(x) + ";" + str(air_temp_dict[x])))  # all separated by ;
                 print("sensors-queue: air temp message sent: " + x + " - " + str(air_temp_dict[x]))
-
+                time.sleep(0.02) 
+                  
             for x in sub_temp_dict.keys():
                 channel.basic_publish(exchange='',
                                       routing_key='sensors-queue',
                                       body=str.encode(
                                           str(datetime.now()) + ";" + str(x) + ";" + str(sub_temp_dict[x])))  # all separated by ;                
                 print("sensors-queue: sub temp message sent: " + x + " - " + str(sub_temp_dict[x]))
-                time.sleep(0.001)
+                time.sleep(0.02)
 
             for x in air_hum_dict.keys():
                 channel.basic_publish(exchange='',
@@ -90,14 +90,14 @@ def main():
                                       body=str.encode(str(datetime.now()) + ";" + str(x) + ";" + str(
                                           air_hum_dict[x])))  # all separated by ;           
                 print("sensors-queue: air hum message sent: " + x + " - " + str(air_hum_dict[x]))
-                time.sleep(0.001)
+                time.sleep(0.02)
 
             for x in sub_hum_dict.keys():
                 channel.basic_publish(exchange='',
                                       routing_key='sensors-queue',
                                       body=str.encode(str(datetime.now()) + ";" + str(x) + ";" + str(sub_hum_dict[x]))) # all separated by ;
                 print("sensors-queue: sub hum message sent: " + x + " - " + str(sub_hum_dict[x]))
-                time.sleep(0.001)
+                time.sleep(0.2)
 
         except KeyboardInterrupt:
             print('sensors-queue: closed')
