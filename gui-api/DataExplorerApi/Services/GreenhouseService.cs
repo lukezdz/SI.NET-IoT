@@ -1,6 +1,7 @@
 ﻿using DataExplorerApi.Model;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,7 +47,7 @@ namespace DataExplorerApi.Services
             {
                 return new List<Message>();
             }
-
+          //  JsonSerializer.Serialize(collection.Find(message => message.sensorId == sensorId).ToList());
             return collection.Find(message => message.sensorId == sensorId).ToList();
         }
 
