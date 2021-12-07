@@ -19,6 +19,7 @@ namespace DataExplorerFrontend.Pages
         public IEnumerable<Sensor> Sensors { get; set; }
         private readonly ILogger<AirHumidityModel> _logger;
         private readonly SensorRepository sensorRepository;
+        private readonly string volumePath = "/mnt/volume";
 
         public AirHumidityModel(ILogger<AirHumidityModel> logger, SensorRepository sensorRepository)
         {
@@ -32,7 +33,7 @@ namespace DataExplorerFrontend.Pages
                 this.sensorName = sensorName;
                 PageTitle = SensorRepository.MapPageTitle(sensorName);
                 Sensors = sensorRepository.GetAllSensors();
-                StreamWriter sw = new StreamWriter(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) +"/"+sensorName+".csv", false);
+                StreamWriter sw = new StreamWriter(volumePath + "/" + sensorName + ".csv", false);
                 //headers    
                 sw.Write("sensorID,sensorName,value,dateTime");
                 sw.Write(sw.NewLine);

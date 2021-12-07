@@ -8,10 +8,14 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:443;http://+:80
     ports:
-      - "80"
-      - "443"
+      - 8080:80
+      - 8443:443
     networks:
       shared_net:
+    volumes:
+      - type: bind
+        source: ./volume
+        target: /mnt/volume
 
   dataexplorerapi:
     container_name: "data_explorer_api"
@@ -22,18 +26,20 @@ services:
       - "80"
     networks:
       shared_net:
+        aliases:
+          - data_explorer_api
 
   rabbitmq:
     container_name: "rabbitmq"
     image: rabbitmq:3.8-management-alpine
     hostname: rabbitmq.local
     ports:
-      - 5672:5672       # just 4 dev 
-      - 15672:15672     # just 4 dev 
+      # - 5672:5672       # just 4 dev 
+      # - 15672:15672     # just 4 dev 
       # AMQP protocol
-      # - '5672'
+      - '5672'
       # HTTP management UI
-      # - '15672'
+      - '15672'
     healthcheck:
       test: rabbitmq-diagnostics -q ping
       interval: 30s
@@ -53,32 +59,32 @@ services:
       rabbitmq:
         condition: service_healthy
         
-#  mongo:                # just 4 development, on prod we need to connect to Mr. Sobecki mongodb 
-#    container_name: "mongo_db"
-#    image: mongo
-#    restart: always
-#    ports:
-#      - 27017:27017
-#    environment:    
-#      MONGO_INITDB_ROOT_USERNAME: root
-#      MONGO_INITDB_ROOT_PASSWORD: example
-#    networks:
-#      shared_net:
-#        aliases:
-#          - mongodb_custom
+  mongo:                # just 4 development, on prod we need to connect to Mr. Sobecki mongodb 
+    container_name: "mongo_db"
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:    
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      shared_net:
+        aliases:
+          - mongodb_custom
 
-#  mongo-express:        # as above
-#    container_name: "mongo_db_express"
-#    image: mongo-express
-#    restart: always
-#    ports:
-#      - 8081:8081 
-#    environment:
-#      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-#      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-#      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/        
-#    networks:
-#      shared_net:
+  mongo-express:        # as above
+    container_name: "mongo_db_express"
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081 
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/        
+    networks:
+      shared_net:
 
 networks:
   shared_net:
