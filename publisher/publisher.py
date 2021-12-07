@@ -6,8 +6,8 @@ from datetime import datetime
 
 
 def main():
-    # connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.local', port=5672))
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost', port=5672))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.local', port=5672))
+    # connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost', port=5672))
     channel = connection.channel()
 
     # Greenhouse tomatoes environment (best conditions):

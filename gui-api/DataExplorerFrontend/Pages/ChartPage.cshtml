@@ -1,0 +1,49 @@
+﻿@page
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model DataExplorerFrontend.Pages.ChartPageModel
+@{
+}
+<html>
+<head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+
+            var sensors = @Html.Raw(Json.Serialize(Model.filteredSensors));
+            var chartData = [];
+            chartData.push(['Date', 'Sensor value'])
+            for (const index in sensors) {
+                var value = sensors[index].item1;
+                var date = new Date(Date.parse(sensors[index].item2));
+                console.log(value);
+                console.log(date);
+                chartData.push([date, value])
+            }
+            
+            
+            console.log(chartData);
+           
+            var data = google.visualization.arrayToDataTable(chartData);
+                var options = {
+                curveType: 'function',
+                legend: { position: 'bottom' }
+            };
+                var chart = new google.visualization.LineChart(document.getElementById('mychart'));
+                chart.draw(data, options);
+        }        
+    </script>
+</head>
+<body>
+    <h1>@Model.PageTitle</h1>
+    <hr />
+    <form method="post">
+        Choose sensor id:
+        <input type="hidden" name="sensorName" value="@Model.sensorName"/>
+        <input type="number" name="sensorId"  max="30" min="1" size="2" value="@Model.sensorId"/>
+        <input type="submit" value="Submit"/>
+    </form>
+    <div id="mychart" style="width: 900px; height: 500px"></div>
+</body>
+</html>

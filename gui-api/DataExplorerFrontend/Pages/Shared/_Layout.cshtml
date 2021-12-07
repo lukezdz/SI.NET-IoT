@@ -22,8 +22,17 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/SensorPage" asp-route-sensorName="air_temp">Air Temperature</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/SensorPage" asp-route-sensorName="sub_temp">Substrate Temperature</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/SensorPage" asp-route-sensorName="air_hum">Air Humidity</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/SensorPage" asp-route-sensorName="sub_hum">Substrate Humidity</a>
+                        </li>-
                     </ul>
                 </div>
             </div>

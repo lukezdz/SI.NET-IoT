@@ -1,27 +1,27 @@
 version: '3.8'
 
 services:
-  dataexplorerfrontend:
-    container_name: "data_explorer_frontend"
-    build: ./gui-api/DataExplorerFrontend
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:443;http://+:80
-    ports:
-      - "80"
-      - "443"
-    networks:
-      shared_net:
+  # dataexplorerfrontend:
+  #   container_name: "data_explorer_frontend"
+  #   build: ./gui-api/DataExplorerFrontend
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:443;http://+:80
+  #   ports:
+  #     - "80"
+  #     - "443"
+  #   networks:
+  #     shared_net:
 
-  dataexplorerapi:
-    container_name: "data_explorer_api"
-    build: ./gui-api/DataExplorerApi
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "80"
-    networks:
-      shared_net:
+  # dataexplorerapi:
+  #   container_name: "data_explorer_api"
+  #   build: ./gui-api/DataExplorerApi
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #   ports:
+  #     - "80"
+  #   networks:
+  #     shared_net:
 
   rabbitmq:
     container_name: "rabbitmq"
