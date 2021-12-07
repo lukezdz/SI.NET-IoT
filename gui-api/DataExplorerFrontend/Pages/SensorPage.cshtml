@@ -35,19 +35,23 @@
         {
             <thead>
                 <tr class="danger">
+                    <th>ID</th>
                     <th data-defaultsign="_19">Sensor ID</th>
                     <th data-defaultsign="_19">Value</th>
                     <th data-defaultsign="AZ">Date</th>
                 </tr>
             </thead>
+            int index= 1;
             foreach (var item in Model.Sensors)
             {
+
                 <tr>
+                    <td>@index</td>
                     <td>@item.sensorId</td>
                     <td>@item.value</td>
                     <td>@item.dateTime</td>
                 </tr>
-
+                index++;
             }
 
         }

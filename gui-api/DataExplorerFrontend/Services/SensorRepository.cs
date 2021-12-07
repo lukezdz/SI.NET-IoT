@@ -39,7 +39,7 @@ namespace DataExplorerFrontend.Services
 
         public static IList<Sensor> mapJsonToSensor(string sensorName, JObject jObject)
         {
-            JArray items = (JArray)jObject["items"];
+            JArray items = (JArray)jObject["messages"];
             IList<Sensor> sensorsList = items.ToObject<IList<Sensor>>();
             foreach (Sensor sensor in sensorsList)
             {
