@@ -67,8 +67,8 @@ namespace DataExplorerFrontend.Pages
             using (var client = new System.Net.Http.HttpClient())
             {
                 var request = new System.Net.Http.HttpRequestMessage();
-                request.RequestUri = new Uri("http://localhost:5000/api/" + sensorName + "?page=1&pageSize=1000" );
-                //request.RequestUri = new Uri("http://data_explorer_api:80/WeatherForecast");
+                request.RequestUri = new Uri("http://data_explorer_api:80/api/" + sensorName + "?page=1&pageSize=1000" );
+                  // localhost:5000/api
 
                 var response = await client.SendAsync(request);
                 string responseContentInString = await response.Content.ReadAsStringAsync();
