@@ -42,7 +42,7 @@ namespace DataExplorerApi
             services.AddHostedService<QueueConsumer>();         
             services.AddSingleton(serviceProvider =>
                 {
-                    var uri = new Uri("amqp://guest:guest@localhost:5672");
+                    var uri = new Uri("amqp://guest:guest@rabbitmq:5672");
                     return new ConnectionFactory
                     {
                         Uri = uri,
