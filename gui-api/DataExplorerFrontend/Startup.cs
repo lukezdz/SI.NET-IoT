@@ -1,3 +1,4 @@
+using DataExplorerFrontend.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,7 @@ namespace DataExplorerFrontend
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddSingleton<SensorRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

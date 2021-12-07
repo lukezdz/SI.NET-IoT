@@ -44,14 +44,14 @@ services:
         aliases:
           - rabbitmq.local
 
-  publisher:
-    container_name: "data_publisher"
-    build: ./publisher
-    networks:
-      shared_net:
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
+  # publisher:
+  #   container_name: "data_publisher"
+  #   build: ./publisher
+  #   networks:
+  #     shared_net:
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
         
   mongo:                # just 4 development, on prod we need to connect to Mr. Sobecki mongodb 
     container_name: "mongo_db"

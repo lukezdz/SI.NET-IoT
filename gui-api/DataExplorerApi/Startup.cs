@@ -39,7 +39,7 @@ namespace DataExplorerApi
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddTransient<IRequestHandler<Model.Message, Unit>, Model.MessageHandler>();
-            services.AddHostedService<QueueConsumer>();
+            services.AddHostedService<QueueConsumer>();         
             services.AddSingleton(serviceProvider =>
                 {
                     var uri = new Uri("amqp://guest:guest@rabbitmq:5672");
@@ -59,7 +59,7 @@ namespace DataExplorerApi
             services.Configure<GreenhouseDBSettings>(Configuration.GetSection(nameof(GreenhouseDBSettings)));
             services.AddSingleton<IGreenhouseDBSettings>(sp =>
                      sp.GetRequiredService<IOptions<GreenhouseDBSettings>>().Value);
-
+    
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

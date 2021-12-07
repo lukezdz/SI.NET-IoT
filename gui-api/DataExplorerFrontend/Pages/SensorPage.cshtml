@@ -1,0 +1,67 @@
+﻿@page "{sensorName}"
+@model AirHumidityModel
+@{
+    ViewData["Title"] = "Sensor Page";
+}
+
+<h1>@Model.PageTitle</h1>
+<hr />
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col-sm-2">
+            <a asp-area="" asp-page="/ChartPage" asp-route-sensorName="@Model.sensorName"><button class="btn btn-primary">Generate Chart</button></a>
+        </div>
+        <div class="col-sm-2">
+            <form asp-page-handler="csv" method="post">
+                <button class="btn btn-primary">Save to .csv</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="table-responsive">
+    <table class="table table-bordered table-condensed table-striped table-hover sortable">
+        @if (Model.Sensors.Count() == 0)
+        {
+            <tr>
+                <td colspan="10">No Record's found.</td>
+            </tr>
+
+        }
+        else
+        {
+            <thead>
+                <tr class="danger">
+                    <th>ID</th>
+                    <th data-defaultsign="_19">Sensor ID</th>
+                    <th data-defaultsign="_19">Value</th>
+                    <th data-defaultsign="AZ">Date</th>
+                </tr>
+            </thead>
+            int index= 1;
+            foreach (var item in Model.Sensors)
+            {
+
+                <tr>
+                    <td>@index</td>
+                    <td>@item.sensorId</td>
+                    <td>@item.value</td>
+                    <td>@item.dateTime</td>
+                </tr>
+                index++;
+            }
+
+        }
+    </table>
+</div>
+@if(ViewData["Message"] != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            alert("@ViewData["Message"]");
+        };
+    </script>
+}

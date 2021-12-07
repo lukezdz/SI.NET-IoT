@@ -1,6 +1,7 @@
 ﻿using DataExplorerApi.Model;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,8 +47,30 @@ namespace DataExplorerApi.Services
             {
                 return new List<Message>();
             }
-
+          //  JsonSerializer.Serialize(collection.Find(message => message.sensorId == sensorId).ToList());
             return collection.Find(message => message.sensorId == sensorId).ToList();
+        }
+
+        public List<Message> Get(string colName, int page, int pageSize)
+        {
+            IMongoCollection<Message> collection;
+            if (IsCollectionNameValid(colName))
+            {
+                collection = database.GetCollection<Message>(colName);
+            }
+            else // can choose default collection here \/
+            {
+                return new List<Message>();
+            }
+
+            var message_list = new List<Message>();
+            var pageList = QueryByPage(collection, page, pageSize);
+            foreach (var msg in pageList.Result.readOnlyList)
+            {
+                message_list.Add(msg);
+            }
+
+            return message_list;
         }
 
         public List<Message> Get(string colName, string sensorId, int page, int pageSize)
@@ -90,7 +113,7 @@ namespace DataExplorerApi.Services
             var dataFacet = AggregateFacet.Create("data",
                 PipelineDefinition<Message, Message>.Create(new[]
                 {
-                    PipelineStageDefinitionBuilder.Sort(Builders<Message>.Sort.Ascending(x => x.dateTime)),
+                    PipelineStageDefinitionBuilder.Sort(Builders<Message>.Sort.Descending(x => x.dateTime)),
                     PipelineStageDefinitionBuilder.Skip<Message>((page - 1) * pageSize),
                     PipelineStageDefinitionBuilder.Limit<Message>(pageSize),
                 }));
@@ -99,6 +122,40 @@ namespace DataExplorerApi.Services
 
             var aggregation = await collection.Aggregate()
                 .Match(filter)
+                .Facet(countFacet, dataFacet)
+                .ToListAsync();
+
+            var count = aggregation.First()
+                .Facets.First(x => x.Name == "count")
+                .Output<AggregateCountResult>()
+                ?.FirstOrDefault()
+                ?.Count ?? 0;
+
+            var totalPages = (int)count / pageSize;
+
+            var data = aggregation.First()
+                .Facets.First(x => x.Name == "data")
+                .Output<Message>();
+
+            return (totalPages, data);
+        }
+        private static async Task<(int totalPages, IReadOnlyList<Message> readOnlyList)> QueryByPage(IMongoCollection<Message> collection, int page, int pageSize)
+        {
+            var countFacet = AggregateFacet.Create("count",
+                PipelineDefinition<Message, AggregateCountResult>.Create(new[]
+                {
+                    PipelineStageDefinitionBuilder.Count<Message>()
+                }));
+
+            var dataFacet = AggregateFacet.Create("data",
+                PipelineDefinition<Message, Message>.Create(new[]
+                {
+                    PipelineStageDefinitionBuilder.Sort(Builders<Message>.Sort.Descending(x => x.dateTime)),
+                    PipelineStageDefinitionBuilder.Skip<Message>((page - 1) * pageSize),
+                    PipelineStageDefinitionBuilder.Limit<Message>(pageSize),
+                }));
+
+            var aggregation = await collection.Aggregate()
                 .Facet(countFacet, dataFacet)
                 .ToListAsync();
 

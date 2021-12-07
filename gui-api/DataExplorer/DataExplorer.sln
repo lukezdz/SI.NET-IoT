@@ -7,9 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataExplorerApi", "..\DataE
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{D7D5051C-91A8-4B45-9569-A5897E22E429}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataExplorerFrontend", "..\DataExplorerFrontend\DataExplorerFrontend.csproj", "{A95757E7-DB69-4791-A8F7-798909274953}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataExplorerGui", "..\DataExplorerGui\DataExplorerGui.csproj", "{67801173-8B76-4914-947B-BD8901EB7547}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataExplorerFrontend", "..\DataExplorerFrontend\DataExplorerFrontend.csproj", "{A95757E7-DB69-4791-A8F7-798909274953}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +27,6 @@ Global
 		{A95757E7-DB69-4791-A8F7-798909274953}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A95757E7-DB69-4791-A8F7-798909274953}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A95757E7-DB69-4791-A8F7-798909274953}.Release|Any CPU.Build.0 = Release|Any CPU
-		{67801173-8B76-4914-947B-BD8901EB7547}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67801173-8B76-4914-947B-BD8901EB7547}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{67801173-8B76-4914-947B-BD8901EB7547}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67801173-8B76-4914-947B-BD8901EB7547}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,12 +7,15 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DataExplorerApi.Controllers
 {
     [ApiController]
     [Route("/api")]
+
     public class GreenhouseController : ControllerBase
     {
 
@@ -29,28 +32,83 @@ namespace DataExplorerApi.Controllers
         }
 
         [HttpGet("{sensorType}")]
-        public ActionResult<List<Message>> Get(string sensorType)
+        [Produces("application/json")]
+        public IActionResult Get([FromQuery] String page, [FromQuery] String pageSize, string sensorType)
         {
-            var result = _service.GetAll(sensorType);
+            if (sensorType == null)
+                return NotFound();
 
-            if (result.Count > 0)
-                return result;
-      
+            if (page == null && pageSize == null)
+            {
+                _logger.LogDebug("Seek for messages on sensor type=" + sensorType);
+                var result = new MessagesList(_service.GetAll(sensorType));
+                if (result.messages.Count() > 0)
+                {
+                    return new ContentResult()
+                    {
+                        StatusCode = (int)HttpStatusCode.OK,
+                        ContentType = "application/json",
+                        Content = JsonSerializer.Serialize(result)
+                    };
+                }
+            }
+            else if (page != null && page.Length > 0 && pageSize != null && pageSize.Length > 0)
+            {
+                _logger.LogDebug("Seek for messages on sensor type=" + sensorType + ", pagination: page=" + page + ", pageSize=" + pageSize);
+
+                int _page;
+                int _pageSize;
+
+                try
+                {
+                    _page = int.Parse(page);
+                    _pageSize = int.Parse(pageSize);
+                }
+                catch (FormatException)
+                {
+                    _logger.LogDebug("INCORRECT DATA, page and pageSize should be int! Were page=" + page + ", pageSize=" + pageSize);
+                    return BadRequest();
+                }
+                var result = new MessagesList(_service.Get(sensorType, _page, _pageSize));
+
+                if (result.messages.Count > 0)
+                {
+                    return new ContentResult()
+                    {
+                        StatusCode = (int)HttpStatusCode.OK,
+                        ContentType = "application/json",
+                        Content = JsonSerializer.Serialize(result)
+                    };
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+
             return NotFound();
 
         }
 
         [HttpGet("{sensorType}/{sensorId}")]
-        public ActionResult<List<Message>> Get([FromQuery] String page, [FromQuery] String pageSize, string sensorType, string sensorId)
+        [Produces("application/json")]
+        public IActionResult Get([FromQuery] String page, [FromQuery] String pageSize, string sensorType, string sensorId)
         {
             if (sensorType == null && sensorId == null)
                 return NotFound();
 
             if(page == null && pageSize == null) {
                 _logger.LogDebug("Seek for messages on sensor type=" + sensorType + ", on sensor id=" + sensorId);
-                var result = _service.Get(sensorType, sensorId);
-                if (result.Count() > 0)
-                    return result;
+                var result = new MessagesList(_service.Get(sensorType, sensorId)); 
+                if (result.messages.Count() > 0)
+                {
+                    return new ContentResult()
+                    {
+                        StatusCode = (int)HttpStatusCode.OK,
+                        ContentType = "application/json",
+                        Content = JsonSerializer.Serialize(result)
+                    };
+                }
             }
             else if (page != null && page.Length > 0  && pageSize != null && pageSize.Length > 0) {
                 _logger.LogDebug("Seek for messages on sensor type=" + sensorType + ", on sensor id=" + sensorId + ", pagination: page=" + page + ", pageSize=" + pageSize);
@@ -65,10 +123,17 @@ namespace DataExplorerApi.Controllers
                     _logger.LogDebug("INCORRECT DATA, page and pageSize should be int! Were page=" + page + ", pageSize=" + pageSize);
                     return BadRequest();                
                 }
-                var result = _service.Get(sensorType, sensorId, _page, _pageSize);
+                var result = new MessagesList(_service.Get(sensorType, sensorId, _page, _pageSize));
                
-                if (result.Count > 0)
-                    return result;
+                if (result.messages.Count > 0)
+                {
+                    return new ContentResult()
+                    {
+                        StatusCode = (int)HttpStatusCode.OK,
+                        ContentType = "application/json",
+                        Content = JsonSerializer.Serialize(result)
+                    };
+                }
             } else {
                 return BadRequest();
             }           
