@@ -24,3 +24,8 @@ Every table has name which is sensor type and 4 field:
 - SensorId -> int *{1<= SensorId <=30}* number of sensor
 - Value -> int *{1<x<100}* value of sensor
 - Date -> dateTime *{dateType}* dateTime of received data from sensor
+
+
+## Example chart
+
+![alt text](https://i.imgur.com/P8wyWsY.png)
