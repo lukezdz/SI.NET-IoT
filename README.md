@@ -9,3 +9,11 @@ App components:
 - Publisher *[Python]*
 - Queue *[RabbitMQ]*
 - Database *[MongoDB]*
+
+
+## Autors:
+
+- Paweł Leśniewski 175724
+- Laura Zembrzuska 173051
+- Łukasz Zdziarski 176049
+- Łukasz Skołd 171790
