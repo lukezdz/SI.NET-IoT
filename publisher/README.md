@@ -1,15 +1,15 @@
-Publisher posiada 4 typy czujników:
-- temperatura powietrza (air_temp)
-- temperatura podłoża (sub_temp)
-- wilgotność powietrza (air_hum)
-- wilgotność podłoża (sub_hum)
+Publisher has 4 types of sensors:
+- air temperature (air_temp)
+- substrate temperature (sub_temp)
+- air humidity (air_hum)
+- substrate humidity (sub_hum)
 
-Każdy z typów ma po 30 czujników.
+Each type of sensor has 30 sensors.
 
-Czujniki znajdują się w szklarni pomidorów. 
-Czujniki pilnują, aby warunki były idealne dla wzrostu pomidorów.
-Na początku wartości losowane są z przedziału idealnych wartości, a następnie na bieżąco zmieniane o -1, 0 i 1 z prawdopodobieństwem największego trafienia w 0.
-
-Kolejka jest deklarowana na początku z nazwą sensors-queue, bindowana jest z exchangem.
-Na bieżąco publikowane są trwałe wiadomości z id sensora, wartością sensora i datą.
+Sensors are in tomato greenhouse.
+They check, if conditions are perfect to grow tomatoes.
+Firstly, each sensor value is randomed from a specified range.
+Then they are changed by -1, 0 or 1 with probability.
+Sensors queue is declared and binded with exchange.
+Messages are published with id sensor, sensor value and datetime.
 
